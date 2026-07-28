@@ -14,6 +14,9 @@ an agent behaves.
 - Instructions are imperative and specific ("run `go test -race ./...`"), not aspirational
   ("consider testing"). Show a correct example rather than describing one.
 - Skills are written in English, even when the conversation is not — triggering depends on it.
+  Exception: a skill whose subject *is* writing in another language (`cpp-russian`) has its body
+  in that language, because the body doubles as a register sample. Its `description` stays
+  bilingual — an English clause for triggering plus the native-language trigger phrases.
 - Never invent tool names, flags or APIs in a skill. Verify them first; a wrong flag in a skill
   is repeated by the agent every time it fires.
 

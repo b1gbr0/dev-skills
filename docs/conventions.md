@@ -34,6 +34,18 @@ Good: "Golang database access — parameterized queries, struct scanning, NULL h
        the code imports database/sql, sqlx or pgx. Does NOT generate schema migrations."
 ```
 
+## Language
+
+Default: English, including for conversations held in another language. Triggering depends on the
+description matching the model's English-dominant sense of the task.
+
+One exception: when the skill's subject *is* producing text in another language, write the body in
+that language. The body then doubles as a register sample, priming the output it describes, and the
+glossary it carries is native by necessity. Keep the `description` bilingual — an English clause so
+triggering stays reliable, plus the phrases a user would actually type in that language.
+
+`skills/cpp-russian` is the worked example: Russian body, bilingual description.
+
 ## Body structure
 
 Aim for under 500 lines. A body that grows past that is really several skills, or a skill with
