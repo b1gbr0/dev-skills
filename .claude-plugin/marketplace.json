@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "dev-skills",
+  "description": "Personal skills marketplace.",
+  "owner": {
+    "name": "b1gbr0",
+    "email": ""
+  },
+  "plugins": [
+    {
+      "name": "skills",
+      "description": "Personal collection of agent skills.",
+      "source": "./"
+    }
+  ]
+}

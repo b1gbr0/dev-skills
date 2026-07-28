@@ -1,0 +1,11 @@
+.DS_Store
+*.log
+
+# Local agent/session state
+.claude/settings.local.json
+.remember/
+
+# Eval runs and scratch output
+runs/
+.tmp/
+__pycache__/

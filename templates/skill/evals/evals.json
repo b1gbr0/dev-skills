@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "name": "todo-slug",
+    "description": "TODO: what this case checks",
+    "prompt": "TODO: a realistic user request that should trigger this skill",
+    "trap": "TODO: the concrete mistake a model without this skill makes here",
+    "criteria": [
+      "TODO: observable property of a correct answer"
+    ]
+  }
+]
