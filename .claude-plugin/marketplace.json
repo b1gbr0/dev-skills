@@ -3,8 +3,7 @@
   "name": "dev-skills",
   "description": "Personal skills marketplace.",
   "owner": {
-    "name": "b1gbr0",
-    "email": ""
+    "name": "b1gbr0"
   },
   "plugins": [
     {
