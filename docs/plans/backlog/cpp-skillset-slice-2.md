@@ -7,8 +7,9 @@ this file is deleted in the same commit.
 
 Same baseline as slice 1, restated here so this file stands on its own:
 **C++17**, ordinary desktop and service code, toolchains where C++17 is
-complete in practice (GCC 9+, Clang 9+, MSVC 19.2x+), Linux/GCC primary,
-Apple Clang a limited platform. Not embedded, not HPC/GPU. Same form (router +
+complete in practice (GCC 9+, Clang 9+, MSVC 19.2x+), Linux/GCC primary, with
+Apple Clang and MSVC secondary and unverified — named only where a
+recommendation actually differs. Not embedded, not HPC/GPU. Same form (router +
 `references/`), same rule about verifying every version, flag and stdlib name
 against the primary source instead of recalling it.
 

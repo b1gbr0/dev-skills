@@ -24,13 +24,14 @@ because that is where the code these skills serve is actually built; Clang on
 Linux is the second toolchain, and it matters on its own because libc++ and
 libstdc++ do not ship the same feature set at the same time.
 
-Apple Clang is a **limited, unverified** platform. There is no macOS C++ project
-to check against right now, so every claim about it comes from documentation
-rather than from a local build: its library support carries availability
-annotations tied to the deployment target, and wherever that changes the
-recommendation the skill must name the constraint instead of staying silent
-about it. It must not silently generalise from libc++ on Linux to Apple's
-libc++.
+Apple Clang and MSVC are **secondary, unverified** platforms: nothing is built
+on either of them today, so every claim about them comes from documentation
+rather than from a local build. Neither is promised full coverage. They are
+named only where a recommendation actually differs there, and the skill says
+plainly that it is a documented difference rather than a verified one. Silence
+is not the same as portability — Apple Clang gates parts of the library on the
+deployment target through availability annotations, and generalising from
+libc++ on Linux to Apple's libc++ is exactly the mistake to avoid.
 
 C++17 is old enough that the language side is uniform, but the library side is
 not. These are known rough edges the skills must name rather than gloss over —
