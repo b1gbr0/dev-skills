@@ -49,7 +49,7 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ## Constraints
 
-1. **Skills are in English.** Repo rule (`CLAUDE.md`, `docs/conventions.md`):
+1. **Skills are in English.** Repo rule (`AGENTS.md`, `docs/conventions.md`):
    triggering depends on an English `description`. This repo is public, so
    plans and docs are in English as well.
 2. **Form is router + `references/`.** `SKILL.md` carries what is needed every
