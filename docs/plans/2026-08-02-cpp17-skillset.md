@@ -19,11 +19,18 @@ continuation is listed under Post-Completion and is not part of this plan.
 ## Baseline
 
 Skills are written against **C++17**, for toolchains where C++17 is complete in
-practice: GCC 9+, Clang 9+, MSVC 19.2x+. Linux/GCC is the primary platform and
-Windows/MSVC is fully in scope. Apple Clang counts as a **limited** platform:
-its library support carries availability annotations tied to the deployment
-target, and wherever that changes the recommendation the skill must name the
-constraint instead of staying silent about it.
+practice: GCC 9+, Clang 9+, MSVC 19.2x+. **Linux/GCC is the primary platform**,
+because that is where the code these skills serve is actually built; Clang on
+Linux is the second toolchain, and it matters on its own because libc++ and
+libstdc++ do not ship the same feature set at the same time.
+
+Apple Clang is a **limited, unverified** platform. There is no macOS C++ project
+to check against right now, so every claim about it comes from documentation
+rather than from a local build: its library support carries availability
+annotations tied to the deployment target, and wherever that changes the
+recommendation the skill must name the constraint instead of staying silent
+about it. It must not silently generalise from libc++ on Linux to Apple's
+libc++.
 
 C++17 is old enough that the language side is uniform, but the library side is
 not. These are known rough edges the skills must name rather than gloss over —
