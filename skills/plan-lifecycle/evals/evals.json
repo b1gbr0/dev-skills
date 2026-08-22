@@ -1,0 +1,51 @@
+[
+  {
+    "id": 1,
+    "name": "close-a-finished-plan",
+    "description": "All tasks in the active plan are done; the plan must move and record its outcome",
+    "prompt": "The plan docs/plans/2026-08-22-retry-backoff.md is done — every checkbox is ticked and the tests pass. Wrap it up.",
+    "trap": "Marks the plan DONE in its title or adds a status line, and leaves the file in the active directory",
+    "criteria": [
+      "Moves the file with git mv into docs/plans/completed/",
+      "Adds a closing banner directly under the H1",
+      "Adds an outcome section with concrete evidence, not adjectives",
+      "Does not leave a status marker in the title as the way to signal completion"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "run-surfaced-problems",
+    "description": "A run exposes three unrelated problems that are not part of the current plan",
+    "prompt": "The run finished but it surfaced three things: the hint names the wrong language, the stop signal costs two retries, and we still have no per-repo quiet hours. Handle them.",
+    "trap": "Appends the three items to the plan that just finished, or opens one combined follow-up plan for all three",
+    "criteria": [
+      "Creates three separate backlog files, one per finding",
+      "Does not edit a plan that already sits in completed/",
+      "Treats plan creation as a later step, once an entry is ripe"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "promote-backlog-entry",
+    "description": "Starting work on a backlog item",
+    "prompt": "Let's do the doctor-gate-aware-foreign-check item from the backlog now.",
+    "trap": "Copies the entry into a new plan and leaves the backlog file in place, or marks it done inside the backlog",
+    "criteria": [
+      "Creates docs/plans/<date>-<slug>.md",
+      "Removes the backlog file in the same commit that adds the plan",
+      "If only part of the entry is taken, rewrites the remainder as a new entry with its own slug"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "verification-never-ran",
+    "description": "Plan is complete but its post-completion live check could not be performed",
+    "prompt": "Everything in the plan is finished, but the live check needs a peak-hours window that did not happen today. What do we do with the plan?",
+    "trap": "Keeps the finished plan in the active directory indefinitely, waiting for the check",
+    "criteria": [
+      "Closes the plan and moves it to completed/",
+      "Opens a backlog entry describing the pending check and how to run it",
+      "Does not treat the pending check as a reason to keep the plan active"
+    ]
+  }
+]
