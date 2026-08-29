@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "no-swallowed-exception",
+    "description": "A catch block recovers or ends the operation instead of silently continuing",
+    "prompt": "Review this C++17 service loop:\n\n```cpp\nfor (const auto& job : jobs) {\n    try {\n        process(job);\n    } catch (const std::exception&) {\n    }\n    mark_complete(job.id);\n}\n```\n\nA failed job must remain retryable.",
+    "trap": "The model accepts the catch as resilience, overlooking that it marks failed work complete and erases the cause.",
+    "criteria": [
+      "Rejects the empty catch block",
+      "Does not mark a failed job complete",
+      "Reports or translates the exception once at the job boundary",
+      "Keeps the failed job in a retryable state"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "honest-noexcept",
+    "description": "noexcept is removed or the implementation is made truly non-throwing",
+    "prompt": "Fix this C++17 function:\n\n```cpp\nvoid Cache::reload() noexcept {\n    entries_ = read_entries(path_);\n}\n```\n\nread_entries allocates and can throw std::system_error. The caller must learn that reload failed.",
+    "trap": "The model keeps noexcept because it looks like an optimization, causing std::terminate precisely when the caller needs the error.",
+    "criteria": [
+      "Removes noexcept from reload under the stated contract",
+      "Explains that an escaping exception from noexcept calls std::terminate",
+      "Does not swallow the system_error",
+      "Optionally prepares new state before commit to preserve the old cache"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "expected-unavailable",
+    "description": "A value-shaped C++17 result does not use std::expected",
+    "prompt": "Design a C++17 parser API whose malformed-input error is an expected branch. Callers need either Config or a structured ParseError and must inspect the result; exceptions are not appropriate for this one API.",
+    "trap": "The model recommends std::expected as modern C++ without noticing that it is C++23, or invents a one-off expected clone.",
+    "criteria": [
+      "Does not use std::expected under C++17",
+      "Uses std::variant<Config, ParseError> or an existing project-wide expected dependency",
+      "Does not create a custom expected type for one API",
+      "Makes exhaustive caller handling visible"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "strong-guarantee-commit",
+    "description": "A mutating reload preserves old state until all throwing work succeeds",
+    "prompt": "Make this C++17 update provide the strong exception guarantee:\n\n```cpp\nvoid Index::reload(const Path& path) {\n    entries_.clear();\n    load_into(entries_, path);\n}\n```\n\nload_into can throw halfway through.",
+    "trap": "The model adds a catch and rethrows after entries_ has already been partially replaced, confusing exception propagation with rollback.",
+    "criteria": [
+      "Builds the replacement in temporary RAII-managed state",
+      "Commits only after load_into succeeds",
+      "Uses a non-throwing swap or equivalent commit operation",
+      "Leaves entries_ unchanged when loading throws"
+    ]
+  }
+]

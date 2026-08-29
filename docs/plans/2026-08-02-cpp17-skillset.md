@@ -187,8 +187,8 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ### Task 4: cpp-error-handling
 
-- [ ] `skills/cpp-error-handling` created
-- [ ] Body covers: exceptions as the default choice for this profile and what
+- [x] `skills/cpp-error-handling` created
+- [x] Body covers: exceptions as the default choice for this profile and what
       exactly makes them acceptable here; what to throw (a hierarchy rooted at
       `std::exception`, when a custom type is warranted) and what not to throw;
       `noexcept` as a contract rather than decoration, and the cost of breaking
@@ -196,15 +196,15 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
       exception must be caught (main, a thread, a callback from a C API, a
       destructor); `std::error_code` and `system_error` for expected I/O
       failures; invariants and asserts versus input validation
-- [ ] `std::expected` is covered as **unavailable** (C++23), with what stands in
+- [x] `std::expected` is covered as **unavailable** (C++23), with what stands in
       for it under C++17 when a result-as-value really is the right shape —
       `std::optional` for value-or-nothing, `std::variant` for value-or-error,
       and a stated position on third-party alternatives
-- [ ] `references/exception-safety.md` exists — the guarantee levels
+- [x] `references/exception-safety.md` exists — the guarantee levels
       (basic / strong / nothrow), copy-and-swap, where the strong guarantee
       comes from and when it is not needed
-- [ ] 3–5 evals with a `trap`
-- [ ] `python3 scripts/validate.py` passes
+- [x] 3–5 evals with a `trap`
+- [x] `python3 scripts/validate.py` passes
 
 ### Task 5: cpp-build
 
