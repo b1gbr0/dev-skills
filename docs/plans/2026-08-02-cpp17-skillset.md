@@ -60,9 +60,11 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 3. **Invent nothing.** Repo rule: a wrong flag in a skill is repeated by the
    agent every single time it fires. Every claim about a feature being
    available, a compiler version, a flag or a name from the standard library is
-   checked against the primary source at the moment of writing — cppreference
-   (including its compiler support page), the C++ Core Guidelines, the
-   clang-tidy / clang-format / CMake documentation. Verify, do not recall.
+   checked at the moment of writing — against English cppreference (including
+   its compiler support page) for the language and standard library, and the
+   official clang-tidy / clang-format / CMake documentation for tools. Use the
+   C++ Core Guidelines for design guidance, not as a version or API reference.
+   Verify, do not recall.
 4. **The C++17 boundary is a mandatory topic.** Under this baseline the
    following are **not available**, and a skill that offers any of them as
    "modern C++" is considered broken:
@@ -99,7 +101,7 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ## Acceptance
 
-- `python3 scripts/validate.py` — 7 skill(s), 0 errors, 0 warnings.
+- `python3 scripts/validate.py` — 8 skill(s), 0 errors, 0 warnings.
 - `shellcheck scripts/*.sh` — clean (this is CI's second step).
 - No `SKILL.md` body longer than 500 lines.
 - Every `description` is 1024 characters or fewer (measure with `wc -m`, not
