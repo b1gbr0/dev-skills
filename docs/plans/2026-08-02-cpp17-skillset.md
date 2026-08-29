@@ -160,8 +160,8 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ### Task 3: cpp-modern-stdlib
 
-- [ ] `skills/cpp-modern-stdlib` created
-- [ ] Body covers what replaces what under C++17: `string_view` instead of
+- [x] `skills/cpp-modern-stdlib` created
+- [x] Body covers what replaces what under C++17: `string_view` instead of
       `const std::string&` parameters, `std::optional` and `std::variant`
       instead of sentinel values and unions, structured bindings instead of
       `.first` / `.second` and `std::tie`, `if constexpr` instead of tag
@@ -171,19 +171,19 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
       `<filesystem>` instead of string paths, `std::clamp` / `std::size`,
       `try_emplace` / `insert_or_assign`, `std::from_chars` instead of
       `stoi` / `sscanf`
-- [ ] The C++17 boundary is spelled out as an explicit list: what looks modern
+- [x] The C++17 boundary is spelled out as an explicit list: what looks modern
       but is unavailable under the baseline, and what to do instead. The three
       real gaps — formatting (no `std::format`), contiguous views (no
       `std::span`), pipelines (no ranges) — each get a named verdict with a
       justification, including whether a third-party dependency earns its place
-- [ ] `references/availability.md` exists — a table of feature → standard →
+- [x] `references/availability.md` exists — a table of feature → standard →
       the GCC/Clang/MSVC version where it actually works, rows checked against
       the compiler support page on cppreference; separate rows for the library
       rough edges listed in the Baseline section above
-- [ ] 3–5 evals with a `trap`; at least one catching a `std::format` or
+- [x] 3–5 evals with a `trap`; at least one catching a `std::format` or
       `std::span` suggestion under C++17, at least one catching C++11-era code
       written where C++17 has a direct answer
-- [ ] `python3 scripts/validate.py` passes
+- [x] `python3 scripts/validate.py` passes
 
 ### Task 4: cpp-error-handling
 

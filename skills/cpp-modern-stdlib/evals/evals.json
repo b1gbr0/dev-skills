@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "reject-cpp20-under-cpp17",
+    "description": "A C++17 modernization does not reach forward to span, ranges, or format",
+    "prompt": "Modernize this C++17 helper while keeping the project at C++17:\n\n```cpp\nstd::string render(const std::vector<int>& values);\nint checksum(const unsigned char* data, std::size_t size);\n```\n\nThe project has no third-party dependencies and these are isolated internal helpers.",
+    "trap": "The model recommends std::format, std::span, and ranges because they look modern, silently raising the language baseline to C++20.",
+    "criteria": [
+      "Does not use std::format, std::span, ranges, or views",
+      "Keeps pointer plus size for the isolated contiguous buffer",
+      "Uses C++17-compatible formatting for the simple helper without adding a dependency",
+      "States the C++20 boundary explicitly"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "use-cpp17-not-cpp11",
+    "description": "C++11-era sentinel and tag-dispatch shapes are replaced by direct C++17 facilities",
+    "prompt": "Refactor this API for C++17:\n\n```cpp\n// Returns an empty string when the user is absent.\nstd::string find_name(UserId id);\n\ntemplate <typename T>\nauto serialize(const T& value, std::true_type);\ntemplate <typename T>\nauto serialize(const T& value, std::false_type);\n```",
+    "trap": "The model preserves sentinel values and tag dispatch for compatibility even though the requested baseline has optional and if constexpr.",
+    "criteria": [
+      "Uses std::optional<std::string> for value-or-nothing",
+      "Uses if constexpr where the compile-time condition is available",
+      "Does not introduce std::expected or concepts",
+      "Explains the semantic improvement rather than calling it cosmetic"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "filesystem-link-edge",
+    "description": "Filesystem support is checked as a library and link concern",
+    "prompt": "Our C++17 project must still build with GCC 8/libstdc++ and LLVM 8/libc++. std::filesystem compiles but fails at link time. What should cpp-build wire, and what should happen on current compilers?",
+    "trap": "The model adds -lstdc++fs globally, assumes Clang always uses libc++, or claims that -std=c++17 alone guarantees filesystem linking.",
+    "criteria": [
+      "Names -lstdc++fs for GNU implementations before GCC 9.1",
+      "Names -lc++fs for LLVM libc++ before LLVM 9.0",
+      "Does not add either compatibility library unconditionally",
+      "Distinguishes compiler frontend from the selected standard library"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "from-chars-overload-gap",
+    "description": "Integer and floating-point charconv support are not conflated",
+    "prompt": "Can a C++17 library use std::from_chars for both int and double if our supported matrix starts at GCC 9, Clang 9 with libc++, and MSVC 19.2x? Give one portable policy rather than per-call #ifdefs.",
+    "trap": "The model sees that from_chars is standardized in C++17 and claims every overload is available on every baseline library.",
+    "criteria": [
+      "Says integer from_chars is available on the stated baseline",
+      "Identifies floating from_chars as unavailable on GCC 9 and libc++ 9",
+      "Selects one configure-time fallback policy for floating parsing",
+      "Does not scatter implementation-version checks through call sites"
+    ]
+  }
+]
