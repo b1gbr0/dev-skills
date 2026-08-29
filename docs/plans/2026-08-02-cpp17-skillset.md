@@ -208,8 +208,8 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ### Task 5: cpp-build
 
-- [ ] `skills/cpp-build` created
-- [ ] Body covers: CMake driven by targets rather than global variables
+- [x] `skills/cpp-build` created
+- [x] Body covers: CMake driven by targets rather than global variables
       (`target_*`, `PUBLIC` / `PRIVATE` / `INTERFACE`, no `include_directories`
       and no editing `CMAKE_CXX_FLAGS` at the top level); setting the standard
       through `target_compile_features` / `cxx_std_17` instead of a hand-written
@@ -217,17 +217,17 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
       presets, a separate sanitizer preset); a warning set and `-Werror` applied
       to your own targets only, never to dependencies; pulling in dependencies
       (`find_package` versus `FetchContent`, and where vcpkg and conan fit)
-- [ ] The linking requirements C++17 imposes are covered: the extra
+- [x] The linking requirements C++17 imposes are covered: the extra
       `<filesystem>` library on older toolchains, and how to express it in CMake
       without hardcoding it for every compiler
-- [ ] `assets/` holds a working skeleton — `CMakeLists.txt` and
+- [x] `assets/` holds a working skeleton — `CMakeLists.txt` and
       `CMakePresets.json` — that actually configures, verified by running
       `cmake --preset`, not by eye
-- [ ] The minimum CMake version and every command and property used are checked
+- [x] The minimum CMake version and every command and property used are checked
       against the CMake documentation
-- [ ] 3–5 evals with a `trap`; at least one about `CMAKE_CXX_FLAGS` at the top
+- [x] 3–5 evals with a `trap`; at least one about `CMAKE_CXX_FLAGS` at the top
       level
-- [ ] `python3 scripts/validate.py` passes
+- [x] `python3 scripts/validate.py` passes
 
 ### Task 6: cpp-testing
 

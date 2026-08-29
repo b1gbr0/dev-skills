@@ -1,0 +1,55 @@
+[
+  {
+    "id": 1,
+    "name": "no-global-cxx-flags",
+    "description": "C++17, warnings, and sanitizer options are target-scoped",
+    "prompt": "Review this CMake for a C++17 application with a vendored dependency:\n\n```cmake\nset(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Werror -fsanitize=address\")\nadd_subdirectory(vendor/widget)\nadd_executable(app src/main.cpp)\ntarget_link_libraries(app widget)\n```",
+    "trap": "The model appends more global flags, so the dependency receives project warnings, Werror, and sanitizer settings unintentionally.",
+    "criteria": [
+      "Removes direct mutation of CMAKE_CXX_FLAGS",
+      "Uses target_compile_features(app PRIVATE cxx_std_17)",
+      "Scopes warnings and sanitizer compile/link options to owned targets",
+      "Does not apply Werror to vendor/widget"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "usage-requirement-scope",
+    "description": "PUBLIC, PRIVATE, and INTERFACE reflect the actual header contract",
+    "prompt": "A CMake library's public header includes <fmt/format.h> and exposes fmt::format_string in a public template, while OpenSSL::Crypto is used only in core.cpp. Write the target_link_libraries call and explain the scopes.",
+    "trap": "The model marks every dependency PUBLIC or every dependency PRIVATE without looking at what consumers must compile.",
+    "criteria": [
+      "Links fmt::fmt PUBLIC because the public interface requires it",
+      "Links OpenSSL::Crypto privately because it is implementation-only",
+      "Uses imported targets rather than raw include and library paths",
+      "Explains the consumer-facing effect of each scope"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "filesystem-probe-not-frontend-guess",
+    "description": "Old filesystem compatibility is selected by a link probe",
+    "prompt": "Our C++17 matrix contains GCC 8/libstdc++, Clang 8/libc++, and Clang 8 using libstdc++. std::filesystem has unresolved symbols. Add portable CMake wiring without global linker flags.",
+    "trap": "The model maps GCC to stdc++fs and every Clang to c++fs by frontend name, which is wrong when Clang uses libstdc++.",
+    "criteria": [
+      "First probes whether std::filesystem links without an extra library",
+      "Tries stdc++fs and c++fs only as compatibility fallbacks",
+      "Links the successful fallback privately to the target",
+      "Does not infer the standard library solely from CMAKE_CXX_COMPILER_ID"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "presets-and-pinned-dependency",
+    "description": "The build has reproducible preset entry points and immutable dependency refs",
+    "prompt": "Set up a C++17 service with CMakePresets configure/build/test commands, a separate ASan+UBSan preset, and fmt fetched from source. Keep the minimum CMake version as low as the requested preset features allow.",
+    "trap": "The model uses CMake 3.19 despite test presets requiring 3.20, tracks fmt's main branch, or hides sanitizers in CMAKE_CXX_FLAGS.",
+    "criteria": [
+      "Uses CMake 3.20 or newer and a compatible presets schema",
+      "Defines configure, build, and test presets",
+      "Pins fmt to an immutable release tag or full commit",
+      "Applies sanitizer compile and link options through owned targets",
+      "Does not combine AddressSanitizer with ThreadSanitizer"
+    ]
+  }
+]
