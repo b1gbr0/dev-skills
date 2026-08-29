@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "string-view-over-temporary",
+    "description": "A borrowed string_view must not outlive temporary or local string storage",
+    "prompt": "Review this C++17 API and fix the lifetime bug without changing the caller-facing meaning:\n\n```cpp\nstd::string_view User::display_name() const {\n    return first_name_ + \" \" + last_name_;\n}\n```",
+    "trap": "The model keeps string_view because it looks cheaper, overlooking that operator+ creates a temporary std::string whose storage dies at return.",
+    "criteria": [
+      "Identifies that the returned std::string_view dangles",
+      "Returns an owning std::string or otherwise introduces storage with an explicit lifetime",
+      "Does not claim that binding string_view extends the temporary lifetime",
+      "Keeps the solution within C++17"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "unique-owner-not-shared",
+    "description": "Compilation trouble does not justify replacing exclusive ownership with shared ownership",
+    "prompt": "This C++17 code fails because Handler is stored in a second place. Please fix ownership:\n\n```cpp\nauto handler = std::make_unique<Handler>();\nserver.set_handler(std::move(handler));\nregistry.push_back(handler);\n```\n\nThe server must own the Handler. The registry only needs to call it while the server is alive.",
+    "trap": "The model changes every unique_ptr to shared_ptr so both containers can copy it, creating shared lifetime where the requirements name one owner.",
+    "criteria": [
+      "Keeps the server as the unique owner",
+      "Makes the registry a non-owning observer with a lifetime tied to the server",
+      "Does not introduce std::shared_ptr merely to make copying compile",
+      "Explains the invalidation or destruction contract of the observer"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "move-mistakes",
+    "description": "std::move is not added to const sources or returned locals",
+    "prompt": "Optimize the copies in this C++17 code:\n\n```cpp\nstd::string build_label() {\n    std::string label = load_label();\n    return std::move(label);\n}\n\nvoid save(const std::string value) {\n    labels_.push_back(std::move(value));\n}\n```",
+    "trap": "The model praises both std::move calls, missing that the return can inhibit NRVO and moving from a const value normally selects a copy.",
+    "criteria": [
+      "Returns label without std::move",
+      "Removes const from the by-value sink parameter before moving from it, or explains why the API should change",
+      "Explains that std::move is a cast and the selected operation performs the move",
+      "Does not assume a moved-from string is necessarily empty"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "contiguous-view-cpp17",
+    "description": "A C++17 API does not accidentally introduce std::span or a home-grown replacement",
+    "prompt": "Design a C++17 function that computes a checksum over a borrowed contiguous byte buffer. This is one internal helper; the project has no GSL or other span dependency.",
+    "trap": "The model recommends std::span as modern C++, silently requiring C++20, or writes an incomplete custom span abstraction for one helper.",
+    "criteria": [
+      "Does not use std::span under C++17",
+      "Uses a pointer plus size for this isolated contiguous-buffer helper",
+      "Keeps the pointer non-owning and documents the required extent",
+      "Does not add a third-party dependency or custom span for one internal function"
+    ]
+  }
+]

@@ -137,8 +137,8 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ### Task 2: cpp-memory-ownership
 
-- [ ] `skills/cpp-memory-ownership` created
-- [ ] Body covers: ownership expressed in the signature (by value, `T&`,
+- [x] `skills/cpp-memory-ownership` created
+- [x] Body covers: ownership expressed in the signature (by value, `T&`,
       `const T&`, `T*` as an optional non-owning parameter, `unique_ptr` as
       transfer of ownership, `shared_ptr` only for genuinely shared lifetime,
       `string_view` as a non-owning view); RAII, the rule of zero, and when the
@@ -146,17 +146,17 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
       not, including the usual mistakes (moving from a const object, moving a
       returned local, use after move); lifetime rules for `string_view` —
       dangling views over temporaries and over the result of `std::string`
-- [ ] The absence of `std::span` under C++17 is addressed head-on: what to pass
+- [x] The absence of `std::span` under C++17 is addressed head-on: what to pass
       instead for a contiguous range, and whether pulling in a third-party span
       is worth it — a verdict with a reason, not a menu
-- [ ] `references/lifetime-traps.md` exists — a walkthrough of dangling
+- [x] `references/lifetime-traps.md` exists — a walkthrough of dangling
       references, including lambda captures by reference and references to
       container elements after reallocation
-- [ ] `description` explicitly claims ownership and lifetime, and sends
+- [x] `description` explicitly claims ownership and lifetime, and sends
       container and algorithm choice to `cpp-modern-stdlib`
-- [ ] 3–5 evals with a `trap`; at least one about a `string_view` over a
+- [x] 3–5 evals with a `trap`; at least one about a `string_view` over a
       temporary, at least one about `unique_ptr` being swapped for `shared_ptr`
-- [ ] `python3 scripts/validate.py` passes
+- [x] `python3 scripts/validate.py` passes
 
 ### Task 3: cpp-modern-stdlib
 
