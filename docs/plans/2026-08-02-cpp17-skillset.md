@@ -231,21 +231,21 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ### Task 6: cpp-testing
 
-- [ ] `skills/cpp-testing` created
-- [ ] Body covers: picking a framework (GoogleTest versus Catch2 — decided by
+- [x] `skills/cpp-testing` created
+- [x] Body covers: picking a framework (GoogleTest versus Catch2 — decided by
       concrete properties of the project, not "both are fine"); test structure,
       fixtures, parameterisation; registering with CTest and running a subset;
       when a mock is needed and when it is noise; sanitizers (ASan / UBSan /
       TSan) as part of the test run — flags checked against the compiler
       documentation, with the note that ASan and TSan cannot be built together
-- [ ] The framework version is pinned against the C++17 baseline: the minimum
+- [x] The framework version is pinned against the C++17 baseline: the minimum
       standard each candidate version requires is verified, so the skill does
       not recommend a release that demands a newer standard
-- [ ] `references/sanitizers.md` exists — what a typical sanitizer report turns
+- [x] `references/sanitizers.md` exists — what a typical sanitizer report turns
       into and where to start reading it
-- [ ] `description` sends presets and build wiring to `cpp-build`
-- [ ] 3–5 evals with a `trap`
-- [ ] `python3 scripts/validate.py` passes
+- [x] `description` sends presets and build wiring to `cpp-build`
+- [x] 3–5 evals with a `trap`
+- [x] `python3 scripts/validate.py` passes
 
 ### Task 7: boundary check
 

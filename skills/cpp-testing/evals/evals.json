@@ -1,0 +1,55 @@
+[
+  {
+    "id": 1,
+    "name": "framework-choice-by-needs",
+    "description": "GoogleTest and Catch2 are chosen by project properties rather than presented as equal options",
+    "prompt": "Choose and pin one test framework for a new C++17 network service. We need typed tests, value-parameterized tests, and mocks for one OS socket boundary. The organization already uses CTest but has no C++ framework standard.",
+    "trap": "The model says both GoogleTest and Catch2 are fine and leaves the decision to taste, or picks Catch2 and then adds a second mocking framework without accounting for the extra stack.",
+    "criteria": [
+      "Chooses GoogleTest because the requirements include typed tests, parameterization, and integrated GoogleMock",
+      "Pins a release compatible with C++17 rather than tracking a branch",
+      "Registers the executable through gtest_discover_tests and CTest",
+      "Keeps mocking limited to the OS socket boundary"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "ctest-is-entry-point",
+    "description": "Tests are discoverable and selectable through the shared CTest graph",
+    "prompt": "Our GoogleTest binary runs locally as ./parser_tests, but ctest --preset dev reports 'No tests were found'. Add the missing CMake registration and show how CI runs only Parser tests with failure output.",
+    "trap": "The model tells CI to invoke the binary directly, creating a second test entry point and leaving CTest unaware of individual cases.",
+    "criteria": [
+      "Links the test binary with GTest::gtest_main or an explicit main",
+      "Uses include(GoogleTest) and gtest_discover_tests",
+      "Runs the subset through ctest --preset dev -R Parser",
+      "Enables output on failure"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "fake-before-internal-mocks",
+    "description": "A test uses a real value or fake instead of mocking every collaborator",
+    "prompt": "A Repository test currently mocks Clock, Record, Serializer, VectorStorage, and Logger and asserts 18 calls in order. Only the remote object store is slow and failure-prone. Refactor the testing approach without changing production behavior.",
+    "trap": "The model updates the mock expectations to match the implementation, preserving a brittle interaction test that fails on harmless refactors.",
+    "criteria": [
+      "Keeps a mock or controlled fake only at the remote object-store boundary",
+      "Uses real value objects and serializer behavior where cheap",
+      "Asserts repository outcomes rather than incidental call order",
+      "Does not expose private members solely for the test"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "separate-sanitizer-builds",
+    "description": "ASan+UBSan and TSan run in separate configurations",
+    "prompt": "Add sanitizer coverage to a GCC/Clang C++17 test matrix. A teammate proposed one preset with -fsanitize=address,undefined,thread and a retry for race failures. Correct the design and explain how to read failures.",
+    "trap": "The model combines incompatible ASan and TSan runtimes and masks races with retries instead of creating deterministic synchronization.",
+    "criteria": [
+      "Creates one ASan+UBSan build and a separate TSan build",
+      "Applies sanitizer flags at both compile and link time",
+      "Keeps a normal unsanitized test run",
+      "Starts diagnosis from the first report and adds a focused regression test",
+      "Does not use retry as the fix for a project-owned race"
+    ]
+  }
+]
