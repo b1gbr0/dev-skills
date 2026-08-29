@@ -114,8 +114,8 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ### Task 1: cpp-code-style
 
-- [ ] `skills/cpp-code-style` created (`scripts/new-skill.sh cpp-code-style`)
-- [ ] Body covers: naming (types / functions / members / constants) with one
+- [x] `skills/cpp-code-style` created (`scripts/new-skill.sh cpp-code-style`)
+- [x] Body covers: naming (types / functions / members / constants) with one
       scheme picked explicitly and a note that foreign code is not renamed;
       header organisation (`#pragma once`, what belongs in the header and what
       stays in the `.cpp`); include order and grouping, include-what-you-use;
@@ -123,17 +123,17 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
       readability and where it hides the type; namespace structure, nested
       namespace definitions, and the ban on `using namespace` in headers;
       `[[nodiscard]]` on functions whose result must not be dropped
-- [ ] `references/clang-format.md` exists — a working `.clang-format` plus a
+- [x] `references/clang-format.md` exists — a working `.clang-format` plus a
       `.clang-tidy` with a check set (`cppcoreguidelines-*`, `bugprone-*`,
       `modernize-*`, and the noisy ones explicitly disabled), check names
       verified against the clang-tidy documentation
-- [ ] The tooling config is consistent with the C++17 baseline: the standard is
+- [x] The tooling config is consistent with the C++17 baseline: the standard is
       stated where the tools take one, and any `modernize-*` check that
       rewrites code into C++20 constructs is disabled or called out
-- [ ] `description` sends resource-ownership questions to
+- [x] `description` sends resource-ownership questions to
       `cpp-memory-ownership` and build wiring to `cpp-build`
-- [ ] 3–5 evals with a `trap`
-- [ ] `python3 scripts/validate.py` passes
+- [x] 3–5 evals with a `trap`
+- [x] `python3 scripts/validate.py` passes
 
 ### Task 2: cpp-memory-ownership
 

@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "preserve-project-style",
+    "description": "An existing repository convention wins over the skill default",
+    "prompt": "Review this C++17 patch for style. The surrounding project consistently uses PascalCase methods and m_ prefixes, but this new method follows that same convention:\n\n```cpp\nclass Session {\npublic:\n    bool ReadPacket(Packet& packet);\nprivate:\n    Socket m_socket;\n};\n```\n\nTell me what should change before merge.",
+    "trap": "The model mechanically renames ReadPacket and m_socket to the skill's default scheme, creating a mixed-style patch instead of preserving the repository convention.",
+    "criteria": [
+      "Does not request renaming identifiers that match the surrounding project",
+      "States that established repository style takes precedence",
+      "Keeps any review comments focused on concrete defects rather than personal preference"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "auto-preserves-information",
+    "description": "auto is used for repetition but not where width or conversion matters",
+    "prompt": "Clean up the style of this C++17 code without changing behavior:\n\n```cpp\nauto timeout = parse_timeout(text);\nauto socket = std::make_unique<Socket>();\nauto ratio = completed / total;\nfor (std::map<std::string, Endpoint>::const_iterator it = endpoints.begin(); it != endpoints.end(); ++it) {\n    connect(it->first, it->second);\n}\n```",
+    "trap": "The model either removes every auto mechanically or replaces every type with auto, hiding integer division and the required timeout width.",
+    "criteria": [
+      "Keeps or recommends auto for make_unique and the verbose iterator case",
+      "Makes the intended type or conversion of timeout and ratio explicit",
+      "Does not introduce C++20 ranges or views under the C++17 baseline"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "self-contained-header",
+    "description": "A header includes what it uses and does not leak namespace directives",
+    "prompt": "Fix this C++17 header so it is safe to include on its own:\n\n```cpp\n#pragma once\nusing namespace std;\n\nclass Parser {\npublic:\n    optional<string_view> parse(const string& input);\n};\n```",
+    "trap": "The model leaves transitive includes or using namespace std in the public header, so consumers compile only in a lucky include order and inherit polluted lookup.",
+    "criteria": [
+      "Adds direct standard-library includes for optional, string, and string_view",
+      "Removes using namespace std from the header",
+      "Qualifies standard-library identifiers with std::",
+      "Does not move ownership or API redesign into this style-only fix"
+    ]
+  },
+  {
+    "id": 4,
+    "name": "clang-tidy-cpp17-boundary",
+    "description": "Tooling enables useful families without rewriting into C++20",
+    "prompt": "Create a starter .clang-tidy for a new C++17 service. I want bugprone, cppcoreguidelines and modernize checks, but CI must reject suggestions that require C++20 or C++23.",
+    "trap": "The model enables modernize-* wholesale and lets fixes introduce constraints, ranges, designated initializers, starts_with, std::format, std::numbers or std::print.",
+    "criteria": [
+      "Enables bugprone-*, cppcoreguidelines-* and modernize-*",
+      "Explicitly disables modernize checks that produce C++20 or C++23 constructs",
+      "Explains that clang-tidy reads -std=c++17 from the compilation database",
+      "Avoids treating warnings in third-party code as project errors"
+    ]
+  }
+]
