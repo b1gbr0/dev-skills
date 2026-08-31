@@ -27,8 +27,8 @@ misses defects inside that library.
 Useful Linux CI defaults:
 
 ```sh
-ASAN_OPTIONS=halt_on_error=1:detect_leaks=1
-UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
+ASAN_OPTIONS=halt_on_error=1:detect_leaks=1 \
+UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1 \
 ctest --preset asan-ubsan --output-on-failure
 ```
 
@@ -50,7 +50,7 @@ target_link_options(project_tsan INTERFACE -fsanitize=thread)
 ```
 
 ```sh
-TSAN_OPTIONS=halt_on_error=1:second_deadlock_stack=1
+TSAN_OPTIONS=halt_on_error=1:second_deadlock_stack=1 \
 ctest --preset tsan --output-on-failure
 ```
 

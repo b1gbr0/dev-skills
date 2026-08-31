@@ -56,16 +56,22 @@ include(GoogleTest)
 gtest_discover_tests(project_tests)
 ```
 
-Catch2:
+Catch2 with `FetchContent`:
 
 ```cmake
 add_executable(project_tests parser_test.cpp)
 target_compile_features(project_tests PRIVATE cxx_std_17)
 target_link_libraries(project_tests PRIVATE project_core Catch2::Catch2WithMain)
 
+list(APPEND CMAKE_MODULE_PATH "${catch2_SOURCE_DIR}/extras")
 include(Catch)
 catch_discover_tests(project_tests)
 ```
+
+`Catch.cmake` is not made discoverable merely by creating the imported targets. The
+module path depends on how Catch2 was acquired; the snippet above uses the
+`catch2_SOURCE_DIR` populated by `FetchContent`. For an installed package, add its
+installed CMake-module directory instead.
 
 Dependency acquisition, presets, and sanitizer target options belong to `cpp-build`.
 This skill requires only that the framework is pinned and exposed through imported
