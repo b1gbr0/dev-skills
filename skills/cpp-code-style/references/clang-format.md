@@ -63,7 +63,7 @@ Checks: >
   -modernize-use-std-numbers,
   -modernize-use-std-print
 WarningsAsErrors: ''
-HeaderFilterRegex: '^(src|include)/'
+HeaderFilterRegex: '(^|.*/)(src|include)/'
 FormatStyle: file
 ```
 
@@ -88,8 +88,12 @@ Then run it against owned sources:
 
 ```sh
 clang-tidy -p build src/request.cpp
-run-clang-tidy -p build '^(src|include)/'
+run-clang-tidy -p build '(^|.*/)(src|include)/'
 ```
+
+Compilation databases commonly contain absolute paths, so a regex anchored directly
+at `src/` can match nothing. Confirm that `run-clang-tidy` lists real project
+translation units before treating a silent run as success.
 
 Do not set `WarningsAsErrors: '*'` in a shared local configuration before the check
 set is clean. CI may promote stable findings to errors for project code, but never

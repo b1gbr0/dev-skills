@@ -15,7 +15,7 @@
     "id": 2,
     "name": "auto-preserves-information",
     "description": "auto is used for repetition but not where width or conversion matters",
-    "prompt": "Clean up the style of this C++17 code without changing behavior:\n\n```cpp\nauto timeout = parse_timeout(text);\nauto socket = std::make_unique<Socket>();\nauto ratio = completed / total;\nfor (std::map<std::string, Endpoint>::const_iterator it = endpoints.begin(); it != endpoints.end(); ++it) {\n    connect(it->first, it->second);\n}\n```",
+    "prompt": "Clean up this C++17 code and fix the ratio bug. parse_timeout returns std::uint32_t; completed and total are std::uint32_t counters; ratio must be a fractional double:\n\n```cpp\nauto timeout = parse_timeout(text);\nauto socket = std::make_unique<Socket>();\nauto ratio = completed / total;\nfor (std::map<std::string, Endpoint>::const_iterator it = endpoints.begin(); it != endpoints.end(); ++it) {\n    connect(it->first, it->second);\n}\n```",
     "trap": "The model either removes every auto mechanically or replaces every type with auto, hiding integer division and the required timeout width.",
     "criteria": [
       "Keeps or recommends auto for make_unique and the verbose iterator case",
