@@ -1,5 +1,9 @@
 # C++17 skill set — slice 1
 
+> **Ran 2026-09-01 and closed.** The plan shipped six narrow C++17 skills with
+> verified topic boundaries, C++17 availability checks, eval traps, and a working
+> CMake skeleton. Details and deferred live-triggering evidence are at the end.
+
 ## Why
 
 No authoritative skill set for modern C++ exists (checked 2026-08-02: samber
@@ -272,5 +276,27 @@ Done by hand, outside the run:
 - Decide whether to link the set into the agent skills directory permanently.
 
 What comes after this slice is not listed here — it lives in
-[docs/plans/backlog/cpp-skillset-slice-2.md](backlog/cpp-skillset-slice-2.md)
-and stays visible when this plan moves into `completed/`.
+[docs/plans/backlog/cpp-skillset-slice-2.md](../backlog/cpp-skillset-slice-2.md)
+and stays visible after this plan moves into `completed/`.
+
+## Outcome
+
+- Added `cpp-code-style`, `cpp-memory-ownership`, `cpp-modern-stdlib`,
+  `cpp-error-handling`, `cpp-build`, and `cpp-testing`, each with 4 eval traps
+  and progressive-disclosure references or assets.
+- `scripts/validate.py`: 8 skills, 0 errors, 0 warnings. All six descriptions
+  are 514–581 characters; all six routers are 173–201 lines.
+- `markdownlint-cli2`: 13 new or changed Markdown files, 0 errors.
+- The bundled CMake 3.20 skeleton configured, built, and passed CTest with both
+  `dev` and `asan-ubsan` presets on AppleClang 21: 1/1 test passed in each build.
+- One independent review reported five important defects: sanitizer environment
+  propagation, Catch2 module discovery, `std::string_view` null termination,
+  clang-tidy path matching, and an ambiguous `auto` eval. All five were fixed in
+  follow-up commits before closure.
+- `shellcheck scripts/*.sh` passed in CI run
+  <https://github.com/b1gbr0/dev-skills/actions/runs/33265125548>; this branch
+  does not change `scripts/`.
+- `scripts/link.sh` linked all six skills into the local agent skill directory.
+  Automatic triggering in a fresh real C++ project remains deliberately visible
+  in [cpp-skillset-live-triggering.md](../backlog/cpp-skillset-live-triggering.md)
+  and gates slice 2.
