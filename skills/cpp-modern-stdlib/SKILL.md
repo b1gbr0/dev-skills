@@ -40,16 +40,21 @@ incompatible meanings across call sites.
 
 ## Borrow text without forcing allocation
 
-Accept `std::string_view` when a function reads character data during the call and
-does not retain it:
+Accept `std::string_view` when a function reads character data through length-aware
+operations during the call and does not retain it:
 
 ```cpp
 bool has_prefix(std::string_view text, std::string_view prefix);
 ```
 
-This accepts strings, literals, and substrings without allocation. It is not a drop-in
-replacement for every `const std::string&`: a callee that stores the data needs an
-owning `std::string`. Load `cpp-memory-ownership` for lifetime decisions.
+This accepts strings, literals, and substrings without allocation. A view is not
+necessarily null-terminated: do not pass `view.data()` to `fopen`, `stat`, or another
+API that expects a C string. Retain `const std::string&` when that contract is part of
+the API, or materialize an owning `std::string` at the boundary.
+
+`std::string_view` is also not a drop-in replacement when the callee stores the data;
+that requires an owning `std::string`. Load `cpp-memory-ownership` for lifetime
+decisions.
 
 C++17 `std::string_view` has no `starts_with` or `ends_with`; those are C++20.
 Use `compare`, `substr`, or a small named helper rather than calling unavailable APIs.
