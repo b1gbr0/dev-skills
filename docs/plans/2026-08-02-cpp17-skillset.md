@@ -249,18 +249,18 @@ If the baseline is wrong, it is fixed in one place — here — before the run.
 
 ### Task 7: boundary check
 
-- [ ] The six `description` fields are read back to back; for every pair that
+- [x] The six `description` fields are read back to back; for every pair that
       could fire on the same file, the owner is decided and reflected in the
       "does NOT cover" clause
-- [ ] No section is repeated in two skills; a duplicate is removed from
+- [x] No section is repeated in two skills; a duplicate is removed from
       whichever skill it is secondary to and replaced by a pointer
-- [ ] Sweep across all six: `wc -m` of every `description` is ≤ 1024, `wc -l` of
+- [x] Sweep across all six: `wc -m` of every `description` is ≤ 1024, `wc -l` of
       every `SKILL.md` is ≤ 500
-- [ ] Grep for the out-of-baseline names (`std::span`, `std::format`, `<=>`,
+- [x] Grep for the out-of-baseline names (`std::span`, `std::format`, `<=>`,
       `ranges::`, `std::expected`, `std::print`, `std::mdspan`,
       `std::flat_map`) — every occurrence sits in a "not available under C++17"
       context
-- [ ] `python3 scripts/validate.py` and `shellcheck scripts/*.sh` pass
+- [x] `python3 scripts/validate.py` and `shellcheck scripts/*.sh` pass
 
 ## Post-Completion
 
