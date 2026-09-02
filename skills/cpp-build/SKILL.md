@@ -1,9 +1,9 @@
 ---
 name: cpp-build
-description: "C++17 build engineering with target-based CMake: target_compile_features, PUBLIC/PRIVATE/INTERFACE usage requirements, warning and sanitizer options, CMakePresets configure/build/test entry points, find_package versus FetchContent, and vcpkg/Conan integration. Use when creating or reviewing CMakeLists.txt, CMakePresets.json, compile/link flags, dependency wiring, compile_commands.json, or filesystem link failures. Does NOT choose application APIs (cpp-modern-stdlib), code style (cpp-code-style), or testing semantics/frameworks (cpp-testing)."
+description: "C++17 build engineering with target-based CMake: target_compile_features, PUBLIC/PRIVATE/INTERFACE usage requirements, warning and sanitizer options, optional CMakePresets configure/build/test entry points, find_package versus FetchContent, and vcpkg/Conan integration. Use when creating or reviewing CMakeLists.txt, CMakePresets.json, compile/link flags, dependency wiring, compile_commands.json, or filesystem link failures. Preserve an existing project's minimum CMake version and documented entry point. Does NOT choose application APIs (cpp-modern-stdlib), code style (cpp-code-style), or testing semantics/frameworks (cpp-testing)."
 user-invocable: true
 license: MIT
-compatibility: CMake 3.20+ and C++17; Linux/GCC primary, Clang second, MSVC documented.
+compatibility: Target-based guidance works with CMake 3.13+; CMakePresets and the bundled starter require CMake 3.20+; C++17.
 metadata:
   author: b1gbr0
   version: "0.1.0"
@@ -13,8 +13,12 @@ metadata:
 
 Model the build as targets and their usage requirements. A target declares the C++
 features, include paths, definitions, options, and libraries it needs; consumers inherit
-only what its public interface requires. Presets provide the stable human and CI entry
-points.
+only what its public interface requires.
+
+In an existing repository, preserve its minimum CMake version, generator matrix, and
+documented developer entry point. Do not raise the minimum or replace a Makefile,
+package-manager command, or CI wrapper merely to adopt this skill's preferred tooling.
+The examples below are defaults for a new build or an explicitly approved migration.
 
 ## Require C++17 on each target
 
@@ -82,9 +86,10 @@ Promote warnings to errors through a project option used only by owned targets. 
 it off while adopting a new compiler; turn it on in the CI preset once the supported
 matrix is clean.
 
-## Make presets the entry point
+## Use presets when the project baseline permits them
 
-Check in `CMakePresets.json` and use named configure, build, and test presets:
+For a new project on CMake 3.20+, check in `CMakePresets.json` and use named
+configure, build, and test presets:
 
 ```sh
 cmake --preset dev
@@ -92,15 +97,18 @@ cmake --build --preset dev
 ctest --preset dev
 ```
 
-CMake 3.20 is the minimum because schema version 2 adds build and test presets. Keep
-machine-local paths and secrets out of the shared file; developers may add an ignored
-`CMakeUserPresets.json` that inherits project presets.
+Schema version 2 and CMake 3.20 are the minimum for build and test presets. Do not add
+a presets file or raise `cmake_minimum_required` when an existing project intentionally
+supports an older CMake. Keep its documented Makefile or other wrapper as the stable
+entry point until a baseline migration is explicitly approved.
 
-Use separate build directories per preset. A sanitizer preset inherits the normal
-debug configuration and changes only sanitizer-specific cache variables.
+For a presets-capable project, keep machine-local paths and secrets out of the shared
+file; developers may add an ignored `CMakeUserPresets.json` that inherits project
+presets. Use separate build directories per preset. A sanitizer preset inherits the
+normal debug configuration and changes only sanitizer-specific cache variables.
 
-A working starter is bundled in [assets/](assets/). Copy the complete skeleton rather
-than retyping pieces, then rename its targets and source files.
+The working starter in [assets/](assets/) intentionally requires CMake 3.20. Copy it
+only for a new project or approved migration, then rename its targets and source files.
 
 ## Wire sanitizers through targets
 

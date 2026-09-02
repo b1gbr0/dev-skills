@@ -51,5 +51,19 @@
       "Applies sanitizer compile and link options through owned targets",
       "Does not combine AddressSanitizer with ThreadSanitizer"
     ]
+  },
+  {
+    "id": 5,
+    "name": "preserve-existing-cmake-baseline",
+    "description": "An existing repository is not migrated to newer CMake merely to adopt presets",
+    "prompt": "Review a mature C++17 repository whose AGENTS.md requires CMake 3.13 compatibility and the root Makefile as the only developer and CI entry point. Add target-scoped warnings to one new library without changing those compatibility requirements.",
+    "trap": "The model raises cmake_minimum_required to 3.20 and adds CMakePresets.json because the skill's starter uses presets, breaking supported build hosts and bypassing the repository workflow.",
+    "criteria": [
+      "Keeps cmake_minimum_required at 3.13",
+      "Keeps the root Makefile as the documented entry point",
+      "Uses target_compile_options or an existing interface target for warnings",
+      "Does not add CMakePresets.json without an approved baseline migration",
+      "Does not mutate CMAKE_CXX_FLAGS globally"
+    ]
   }
 ]
