@@ -6,7 +6,7 @@ license: MIT
 compatibility: C++17; ordinary desktop and service code with exceptions and RTTI enabled.
 metadata:
   author: b1gbr0
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # C++ Error Handling
@@ -175,9 +175,14 @@ Do not rely on an assertion for a condition that an external caller can violate;
 ## Preserve state when operations fail
 
 Choose and document the needed exception guarantee. Use RAII members, perform work in
-temporary state, and commit only after all throwing operations succeed. Read
-[references/exception-safety.md](references/exception-safety.md) when implementing a
-mutating operation, swap, assignment, constructor, or cleanup path.
+temporary state, and commit only after all throwing operations succeed. Evaluating a
+right-hand temporary before assignment protects the old state only until assignment
+begins; it does not prove that the assignment itself has the strong guarantee. Require
+a documented strong assignment operation or commit with a genuinely non-throwing
+`swap` or equivalent transition.
+
+Read [references/exception-safety.md](references/exception-safety.md) when implementing
+a mutating operation, swap, assignment, constructor, or cleanup path.
 
 ## Related skills
 

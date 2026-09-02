@@ -22,7 +22,8 @@
       "Removes noexcept from reload under the stated contract",
       "Explains that an escaping exception from noexcept calls std::terminate",
       "Does not swallow the system_error",
-      "Optionally prepares new state before commit to preserve the old cache"
+      "Does not claim entries_ is unchanged without establishing the assignment guarantee",
+      "If the strong guarantee is required, uses temporary state and a non-throwing commit"
     ]
   },
   {
