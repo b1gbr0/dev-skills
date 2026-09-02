@@ -1,9 +1,9 @@
 ---
 name: cpp-testing
-description: "C++17 testing with GoogleTest or Catch2, CTest registration and filtering, focused fixtures and parameterized tests, mock-versus-fake decisions, and separate ASan/UBSan/TSan runs. Use when adding or reviewing *_test.cpp files, choosing a C++ test framework, configuring gtest_discover_tests or catch_discover_tests, debugging sanitizer reports, or deciding what to mock. Does NOT own general CMake/preset wiring (cpp-build), production error policy (cpp-error-handling), or benchmark methodology (cpp-performance)."
+description: "C++17 testing with an existing project harness or, for new projects, GoogleTest or Catch2; CTest registration and filtering, focused fixtures and parameterized tests, mock-versus-fake decisions, and separate ASan/UBSan/TSan runs. Use when adding or reviewing *_test.cpp files, choosing a C++ test framework, configuring test discovery, debugging sanitizer reports, or deciding what to mock. Preserve repository-specific test registration and conventions unless a migration is explicitly requested. Does NOT own general CMake/preset wiring (cpp-build), production error policy (cpp-error-handling), or benchmark methodology (cpp-performance)."
 user-invocable: true
 license: MIT
-compatibility: C++17; GoogleTest v1.18.0 or Catch2 v3.16.0; CTest through CMake 3.20+.
+compatibility: C++17; preserves an existing harness, or uses GoogleTest v1.18.0 / Catch2 v3.16.0 for a new project; CTest.
 metadata:
   author: b1gbr0
   version: "0.1.0"
@@ -15,6 +15,21 @@ Test observable contracts at the cheapest useful boundary. Keep tests determinis
 small enough to diagnose from one failure, and registered with CTest so developers and
 CI use the same entry point. Use sanitizers as separate test configurations, not as a
 substitute for assertions.
+
+## Preserve the repository's test harness
+
+Before choosing a framework, inspect the existing test executables, CTest helpers,
+fixture conventions, and required comments or naming. Add a test through those paths.
+Do not introduce GoogleTest or Catch2 into a mature repository merely because this
+skill uses them as defaults for new projects; a framework migration is a separate
+architectural change with its own plan.
+
+A small custom harness can be legitimate when it already integrates with ABI fixtures,
+fault injection, or constrained build hosts. Improve its tests in place unless the
+user explicitly requests replacement.
+
+Failure mode this prevents: one regression test adds a second framework, duplicate
+registration logic, and a newer CMake requirement to a stable project.
 
 ## Choose one framework for concrete reasons
 

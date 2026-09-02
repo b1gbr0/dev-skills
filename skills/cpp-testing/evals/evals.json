@@ -51,5 +51,19 @@
       "Starts diagnosis from the first report and adds a focused regression test",
       "Does not use retry as the fix for a project-owned race"
     ]
+  },
+  {
+    "id": 5,
+    "name": "preserve-existing-test-harness",
+    "description": "One regression test follows the repository's established custom harness",
+    "prompt": "Add a regression test to a mature C++17 repository. Existing tests are standalone bool-returning functions registered with a project helper named add_project_test; CI runs them through CTest. The repository has no GoogleTest or Catch2 dependency.",
+    "trap": "The model introduces GoogleTest for one test, bypasses add_project_test, and creates a second testing convention with new dependency and build requirements.",
+    "criteria": [
+      "Uses the existing bool-returning test style",
+      "Registers the executable through add_project_test",
+      "Keeps CTest as the shared execution entry point",
+      "Does not add GoogleTest or Catch2 without an explicit migration request",
+      "Preserves repository-specific naming and comment conventions"
+    ]
   }
 ]
