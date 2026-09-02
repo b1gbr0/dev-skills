@@ -6,7 +6,7 @@ license: MIT
 compatibility: C++17; GCC 9+, Clang 9+, or MSVC 19.2x. Linux/GCC is the primary profile.
 metadata:
   author: b1gbr0
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # C++ Code Style
@@ -33,6 +33,21 @@ Use this default only when the project has no clear convention:
 
 Failure mode this prevents: a patch spends its review budget renaming stable code
 instead of making the requested behavioral change.
+
+## Review evidence, not missing context
+
+Treat a supplied declaration or snippet as an excerpt unless the prompt says it is the
+complete file. Do not invent missing include guards, includes, forward declarations,
+or implementation defects from code that was not shown. Ask for the surrounding file
+when those facts affect the review.
+
+A member function's `const` qualifier governs mutation of `*this`, not mutation through
+a non-const reference parameter. A method may modify `Packet& output` and still be
+`const` if it does not modify the owning object's observable state. Decide from the
+implementation and class contract, not from the parameter type alone.
+
+Failure mode this prevents: a focused naming review grows speculative changes and
+rejects a valid `const` method for the wrong reason.
 
 ## Keep interfaces in headers and implementation in sources
 

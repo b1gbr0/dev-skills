@@ -8,6 +8,8 @@
     "criteria": [
       "Does not request renaming identifiers that match the surrounding project",
       "States that established repository style takes precedence",
+      "Does not infer missing guards or includes from an excerpt",
+      "Does not infer member-function constness from mutation of a reference parameter",
       "Keeps any review comments focused on concrete defects rather than personal preference"
     ]
   },
