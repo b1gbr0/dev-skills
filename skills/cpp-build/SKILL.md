@@ -6,7 +6,7 @@ license: MIT
 compatibility: Target-based guidance works with CMake 3.13+; CMakePresets and the bundled starter require CMake 3.20+; C++17.
 metadata:
   author: b1gbr0
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # C++ Build
@@ -20,22 +20,51 @@ documented developer entry point. Do not raise the minimum or replace a Makefile
 package-manager command, or CI wrapper merely to adopt this skill's preferred tooling.
 The examples below are defaults for a new build or an explicitly approved migration.
 
-## Require C++17 on each target
+## Pin owned targets and publish minimum requirements
 
-Use `target_compile_features`, not a handwritten global `-std=` flag:
+For a project whose owned targets share one language baseline, set the project defaults
+after `project()` and before declaring targets:
+
+```cmake
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+```
+
+These variables initialize `CXX_STANDARD`, `CXX_STANDARD_REQUIRED`, and
+`CXX_EXTENSIONS` on targets created afterwards. `REQUIRED ON` prevents CMake from
+silently decaying to an older supported mode; `EXTENSIONS OFF` requests a strict
+standard dialect such as `-std=c++17` instead of `-std=gnu++17`. Preserve an existing
+repository's policy. Directory variables are inherited by subdirectories, so do not let
+these defaults silently rewrite the mode of a vendored `add_subdirectory`. When targets
+intentionally use different standards or third-party targets must keep their own policy,
+set the three properties on each owned target instead.
+
+Still declare the minimum requirement exposed by each target:
 
 ```cmake
 add_library(project_core src/core.cpp)
 target_compile_features(project_core PUBLIC cxx_std_17)
 ```
 
-`PUBLIC` means consumers must also compile as C++17 because the public headers expose
-that requirement. Use `PRIVATE` when only implementation files need it. Do not set
-`CMAKE_CXX_FLAGS` or append compiler flags globally; that bypasses compiler portability,
-configuration handling, and dependency boundaries.
+The `cxx_std_17` meta-feature means **at least** C++17. `PUBLIC` propagates that lower
+bound because public headers require it; use `PRIVATE` when only implementation files
+need it and `INTERFACE` for a header-only target. The `CXX_STANDARD` properties select
+the mode for compiling an owned target but are not usage requirements and do nothing
+for an `INTERFACE` target, which has no compilation step. These mechanisms complement
+each other rather than replace each other.
 
-Failure mode this prevents: a dependency inherits project-only flags or one target
-quietly compiles under a different language standard.
+Neither mechanism expresses a maximum standard for consumers. A consumer may compile
+public headers in a newer mode, and a target or dependency that explicitly requires
+`cxx_std_20` can make CMake select C++20. Treat such a stronger requirement as an
+intentional baseline change; do not describe `target_compile_features(... cxx_std_17)`
+alone as a C++17 pin.
+
+Do not set `CMAKE_CXX_FLAGS` or append handwritten `-std=` flags globally. That bypasses
+compiler portability, configuration handling, and dependency boundaries.
+
+Failure mode this prevents: targets silently use compiler-default extensions or a newer
+language mode, while an exported header-only requirement fails to reach consumers.
 
 ## Express usage requirements with target scope
 
@@ -82,9 +111,21 @@ else()
 endif()
 ```
 
+`-Wpedantic` diagnoses many extensions but normally leaves them as warnings. GCC and
+Clang can therefore accept syntax from a newer C++ standard even when CMake selected
+a strict standard mode such as `-std=c++17`. A strict CI conformance gate combines the selected standard mode,
+`-Wpedantic`, and warnings-as-errors on owned targets. The option below supplies
+`-Werror` only when the supported compiler matrix is clean; `/permissive-` and `/WX`
+play the corresponding roles in the MSVC branch. If the project wants conformance
+diagnostics to be fatal without promoting every warning, verify `-pedantic-errors` on
+its supported GCC and Clang versions. Treat narrower diagnostics such as
+`-Werror=c++20-extensions` as compiler-specific refinements, not the portable gate.
+
 Promote warnings to errors through a project option used only by owned targets. Keep
 it off while adopting a new compiler; turn it on in the CI preset once the supported
-matrix is clean.
+matrix is clean. clang-tidy is not a replacement for this gate: it reads the language
+mode from the compilation database and has no comprehensive check that pins source to
+a chosen standard.
 
 ## Use presets when the project baseline permits them
 

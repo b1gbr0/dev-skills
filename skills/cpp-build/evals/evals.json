@@ -2,14 +2,16 @@
   {
     "id": 1,
     "name": "no-global-cxx-flags",
-    "description": "C++17, warnings, and sanitizer options are target-scoped",
-    "prompt": "Review this CMake for a C++17 application with a vendored dependency:\n\n```cmake\nset(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Werror -fsanitize=address\")\nadd_subdirectory(vendor/widget)\nadd_executable(app src/main.cpp)\ntarget_link_libraries(app widget)\n```",
-    "trap": "The model appends more global flags, so the dependency receives project warnings, Werror, and sanitizer settings unintentionally.",
+    "description": "The owned targets use a strict C++17 mode while usage requirements and options remain target-scoped",
+    "prompt": "Review this CMake for a C++17 application with a vendored dependency. CI must reject C++20 syntax and compiler extensions in owned code, and the build should express its requirements through CMake targets rather than raw global flags:\n\n```cmake\nset(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra -Werror -fsanitize=address\")\nadd_subdirectory(vendor/widget)\nadd_executable(app src/main.cpp)\ntarget_link_libraries(app widget)\n```",
+    "trap": "The model either keeps global flags, or replaces them only with cxx_std_17 and mistakes that lower-bound usage requirement for an exact C++17 mode.",
     "criteria": [
       "Removes direct mutation of CMAKE_CXX_FLAGS",
-      "Uses target_compile_features(app PRIVATE cxx_std_17)",
-      "Scopes warnings and sanitizer compile/link options to owned targets",
-      "Does not apply Werror to vendor/widget"
+      "Selects C++17 with CXX_STANDARD, CXX_STANDARD_REQUIRED, and CXX_EXTENSIONS disabled for owned targets",
+      "Keeps target_compile_features(app PRIVATE cxx_std_17) as the target usage requirement",
+      "Scopes warning and sanitizer compile/link options to owned targets",
+      "Makes pedantic diagnostics fatal in strict CI on owned targets",
+      "Does not leak the project's standard, Werror, warning, or sanitizer policy into vendor/widget"
     ]
   },
   {
@@ -64,6 +66,21 @@
       "Uses target_compile_options or an existing interface target for warnings",
       "Does not add CMakePresets.json without an approved baseline migration",
       "Does not mutate CMAKE_CXX_FLAGS globally"
+    ]
+  },
+  {
+    "id": 6,
+    "name": "exact-mode-and-interface-minimum",
+    "description": "An exact mode for owned targets remains distinct from a transitive minimum for consumers",
+    "prompt": "A project claims to be pinned to C++17. Its compiled library uses `target_compile_features(core PUBLIC cxx_std_17)`, and its header-only `api` target has no standard requirement. A compiler that accepts designated initializers as an extension lets C++20 syntax through. Correct the CMake policy, explain what each mechanism guarantees, and say whether clang-tidy can enforce the standard ceiling.",
+    "trap": "The model calls cxx_std_17 an exact pin, or sets only CMAKE_CXX_STANDARD and forgets that an INTERFACE target must propagate its minimum requirement separately.",
+    "criteria": [
+      "States that cxx_std_17 requests at least C++17 rather than an upper bound",
+      "Pins owned compiled targets with CXX_STANDARD 17, CXX_STANDARD_REQUIRED ON, and CXX_EXTENSIONS OFF",
+      "Uses target_compile_features(api INTERFACE cxx_std_17) for the header-only consumer requirement",
+      "Explains that consumers may still compile in a newer standard mode",
+      "Uses compiler pedantic diagnostics promoted to errors as the strict CI gate",
+      "Does not present clang-tidy as a comprehensive language-standard conformance check"
     ]
   }
 ]
