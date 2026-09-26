@@ -136,3 +136,42 @@ The else-branch is the load-bearing half — it converts whatever lease exists:
 Verify the outcome, not the intent: after applying, check that the lease shows up
 as **non-dynamic** (`/ip dhcp-server lease print where !dynamic`) with the
 expected address — a silent skip looks exactly like success in the script output.
+
+### Converting a lease inside a script: don't swallow the error
+
+A one-liner that found a lease, converted it and then tagged it failed on the live
+router with:
+
+```text
+failure: can not change dynamic lease (/ip/dhcp-server/lease/set *0)
+```
+
+The conversion was written as `:do { make-static $l } on-error={ }` — so whatever
+went wrong inside it disappeared, and the *next* command (`set` on a lease that
+was still dynamic) produced a message naming a completely different problem. The
+same shape appears in shipped scripts (`install-mihomo.rsc`), so it is worth
+knowing before debugging one.
+
+What is verified:
+
+- guarding on an explicit condition and re-resolving the lease by its key fixes
+  it, so the reliable shape is:
+
+  ```text
+  :if ([:len [/ip dhcp-server lease find where mac-address=$mac dynamic=yes]] > 0) do={
+      /ip dhcp-server lease make-static [find where mac-address=$mac]
+  }
+  :local addr [/ip dhcp-server lease get [find where mac-address=$mac] address]
+  /ip dhcp-server lease set [find where mac-address=$mac] \
+      address-lists=bypass-list comment=("guest: " . $nm)
+  ```
+
+- `:do { } on-error={ }` itself is fine, nested or not — verified with a script
+  that ran the same body standalone, nested inside a one-line `:if`, and nested
+  inside a multi-line block (all three executed);
+- what exactly made `make-static $l` fail *in that one-liner* was never isolated
+  (the same call succeeds interactively). Re-resolving after conversion and not
+  hiding the error are the parts that matter.
+
+The debugging was made harder by `:put` strings in Russian, which arrive mangled —
+the ASCII rule above is not cosmetic.
