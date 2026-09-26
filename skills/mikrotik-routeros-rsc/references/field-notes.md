@@ -4,6 +4,27 @@ Lessons from operating a RouterOS gateway in production — a router reset and
 rebuild, DHCP reservation moves, service hardening. Everything below was
 reproduced on RouterOS **7.24.4** unless stated otherwise.
 
+## Never probe a property by setting it
+
+`/ip dhcp-server set [find] address-lists=probe` is not a dry run. If the property
+exists, the change lands on the live device immediately — and starts populating a
+list called `probe`. The intent was "does this object accept `address-lists`?";
+the result was a configuration change on a production router (reverted seconds
+later, plus the leftover dynamic address-list entry to clean up).
+
+To enumerate what an object accepts, **print it in full** — `print detail` shows
+every property with its current value and needs no writes:
+
+```text
+/ip dhcp-server print detail
+#   name="defconf" interface=bridge lease-time=30m address-pool=default-dhcp
+#   use-radius=no use-reconfigure=no lease-script="" address-lists=""
+```
+
+Same rule for menus: `print detail` (not a probing `set`), `/export` for the whole
+configuration, and `import file=x.rsc verbose=yes dry-run` for scripts. Reserve
+`set` for changes you intend, and revert the moment a probe slips through.
+
 ## Non-ASCII in an inline SSH command breaks parsing
 
 A script sent as `ssh admin@router '<script>'` is executed inline, and non-ASCII
