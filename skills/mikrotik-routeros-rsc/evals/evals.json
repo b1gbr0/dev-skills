@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "non-ascii-over-inline-ssh",
+    "description": "A non-ASCII string must reach RouterOS through an inline ssh command",
+    "prompt": "On a MikroTik gateway I set a Russian comment on a netwatch entry: ssh admin@router.lan '/tool netwatch set [find comment=\"wan health\"] comment=\"сторож шлюза\"'. It came back with `syntax error (line 1 column 28)` although the line looks balanced. Fix it.",
+    "trap": "Retries the same inline command with re-escaped quotes, or blames bracket balance and permutes quoting instead of the encoding",
+    "criteria": [
+      "Identifies non-ASCII text over inline ssh as the cause, not quoting or brace balance",
+      "Moves the non-ASCII string into a .rsc file applied with /import, or keeps the inline command ASCII-only",
+      "Does not conclude the router or firmware is broken"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "enum-value-misleading-error",
+    "description": "A property set fails with a syntax error that points at the value, not at the syntax",
+    "prompt": "/ip cloud set ddns-enabled=no returns `syntax error (line 1 column 28)`. Find out what the property really accepts and switch DDNS off.",
+    "trap": "Treats it as a syntax/quoting problem and keeps permuting the command, or claims DDNS was disabled without checking",
+    "criteria": [
+      "Quotes the enum value to obtain the real error (`must be either yes or auto`)",
+      "Reports that 7.24 cannot disable ddns-enabled explicitly and names the effective state (back-to-home-vpn)",
+      "Does not report success without verifying the resulting value"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "reservation-script-with-existing-lease",
+    "description": "A reservation script that only handles the 'no lease yet' case silently fails after a router reset",
+    "prompt": "After a router reset a VM sits in the DHCP pool with a random address instead of its reserved 192.168.88.2, and the route plus the netwatch probe that point at .2 are dead. The install script only adds a lease when none exists yet. Fix it.",
+    "trap": "Patches the live router by hand or adds an exception instead of making the script handle the existing lease; or asserts that a plain renew/reconfigure in the guest will pick up the reservation",
+    "criteria": [
+      "Adds the else-branch that converts the existing lease (make-static + set address)",
+      "States that the client keeps its old address until lease expiry because RouterOS does not NAK, and names a way to force a fresh DISCOVER",
+      "Verifies afterwards that the lease is non-dynamic at the expected address"
+    ]
+  }
+]
